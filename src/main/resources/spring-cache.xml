@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:cache="http://www.springframework.org/schema/cache" xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/cache
+        http://www.springframework.org/schema/cache/spring-cache-3.2.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+    <!-- 支持缓存注解 -->
+    <cache:annotation-driven cache-manager="cacheManager"/>
+    <!-- 默认是cacheManager -->
+    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+        <property name="cacheManager" ref="cacheManagerFactory"/>
+    </bean>
+    <!-- cache管理器配置 -->
+    <bean id="cacheManagerFactory" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+        <property name="configLocation" value="classpath:ehcache.xml"/>
+        <property name="shared" value="true"/>
+    </bean>
+
+    <!--为了测试拦截器缓存-->
+    <!-- 定义 ehCache 的工厂， 并设置所使用的 Cache name -->
+    <bean id="ehCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+        <property name="cacheManager">
+            <ref local="cacheManagerFactory"/>
+        </property>
+        <!--如果 cacheName 属性内设置的 name 在 ehCache.xml 中无法找到， 那么将使用默认的-->
+        <!--cache(defaultCache 标签定义)-->
+        <property name="cacheName">
+            <value>DEFAULT_CACHE</value>
+        </property>
+    </bean>
+
+    <!-- find/create cache 拦截器 -->
+    <bean id="methodCacheInterceptor"
+          class="cn.lifuyi.ehcache.MethodCacheInterceptor">
+        <property name="cache">
+            <ref local="ehCache" />
+        </property>
+    </bean>
+
+    <!-- flush cache 拦截器 -->
+    <bean id="methodCacheAfterAdvice"
+          class="cn.lifuyi.ehcache.MethodCacheAfterAdvice">
+        <property name="cache">
+            <ref local="ehCache" />
+        </property>
+    </bean>
+
+    <!--下面是ehcache的XML配置方式-->
+    <!--上面的代码最终创建了两个"切入点"， methodCachePointCut 和-->
+    <!--methodCachePointCutAdvice， 分别用于拦截不同方法名的方法， 可以根据需要任意增加-->
+    <!--所需要拦截方法的名称。-->
+   <!-- <bean id="methodCachePointCut"
+          class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+        <property name="advice">
+            <ref local="methodCacheInterceptor"/>
+        </property>
+        <property name="patterns">
+            <list>
+                <value>cn.lifuyi.modules.service.UserService.findAll</value>
+            </list>
+        </property>
+    </bean>
+    <bean id="methodCachePointCutAdvice"
+          class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+        <property name="advice">
+            <ref local="methodCacheAfterAdvice"/>
+        </property>
+        <property name="patterns">
+            <list>
+                <value>cn.lifuyi.modules.service.UserService.addUser</value>
+                <value>cn.lifuyi.modules.service.UserService.active</value>
+                <value>cn.lifuyi.modules.service.UserService.delete</value>
+                <value>cn.lifuyi.modules.service.UserService.update</value>
+            </list>
+        </property>
+    </bean>-->
+</beans>

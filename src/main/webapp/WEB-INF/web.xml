@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+	http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
+  <!--编码配置，相当于编码拦截器,拦截所有请求-->
+  <filter>
+    <filter-name>CharacterFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>CharacterFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <!--指定Spring配置文件位置,启动Web项目的时候web容器会读取listener和context-param节点，创建一个servletContext上下文-->
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath:spring-*.xml</param-value>
+  </context-param>
+  <!--spring监听器-->
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  <!--DispatcherServlet前置控制器设置，拦截匹配的请求，把拦截下来的请求按照某种规划分发到目标controller处理-->
+  <servlet>
+    <servlet-name>spring-mvc</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>classpath*:spring-mvc.xml</param-value>
+    </init-param>
+    <!--启动容器时初始化该servlet-->
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <!--拦截方式-->
+  <!--1、拦截*.do、*.action。不会导致静态资源被拦截-->
+  <!--2、拦截/,会拦截静态资源，可能导致其不显示-->
+  <servlet-mapping>
+    <servlet-name>spring-mvc</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+</web-app>

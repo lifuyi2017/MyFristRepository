@@ -1,0 +1,31 @@
+/**
+ * Created by Administrator on 2017/12/19 0019.
+ */
+$(function () {
+    $("#loginForm").validate({
+        rules:{
+            "name":{
+                "required":true
+            },
+            "password":{
+                "required":true
+            },
+            "checkCode":{
+                "required":true,
+                "checkCode":true
+            }
+        },
+        messages:{
+            "name":{
+                "required":"用户名不能为空"
+            },
+            "password":{
+                "required":"密码不能为空"
+            },
+            "checkCode":{
+                "required":"验证码不能为空",
+                "checkCode":"验证码错误"
+            }
+        }
+    });
+});

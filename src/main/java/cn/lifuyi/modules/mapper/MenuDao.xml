@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.lifuyi.modules.dao.MenuDao">
+    <resultMap id="menuMap" type="Menu">
+        <id property="id" column="mid"/>
+        <result property="name" column="mname"/>
+        <result property="url" column="murl"/>
+    </resultMap>
+
+    <select id="findMenuByRole" parameterType="Menu" resultMap="menuMap">
+        SELECT m.id mid,m.name mname,m.url murl from role_menu rm,menu m where rm.menu_id=m.id and rm.role_id=#{id}
+    </select>
+</mapper>

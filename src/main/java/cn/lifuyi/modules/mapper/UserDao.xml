@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.lifuyi.modules.dao.UserDao">
+    <resultMap id="userResultMap" type="User">
+        <id property="id" column="id"/>
+        <result property="loginName" column="login_name"/>
+        <result property="password" column="password"/>
+        <result property="loginTime" column="login_time"/>
+        <result property="realName" column="real_name"/>
+        <result property="sex" column="sex"/>
+        <result property="status" column="status"/>
+        <result property="roleId" column="role_id"/>
+        <result property="registTime" column="regist_time"/>
+    </resultMap>
+    <!--查询用户-->
+    <select id="findByParam" parameterType="User" resultMap="userResultMap">
+        SELECT * FROM user1 
+        <where>
+            <if test="id!=null and id!=''">
+                and id=#{id}
+            </if>
+            <if test="loginName!=null and loginName!=''">
+                and login_name=#{loginName}
+            </if>
+            <if test="password!=null and password!=''">
+                and password=#{password}
+            </if>
+            <if test="loginTime!=null and loginTime!=''">
+                and login_time=#{loginTime}
+            </if>
+            <if test="realName!=null and realName!=''">
+                and real_name=#{realName}
+            </if>
+            <if test="sex!=null">
+                and sex=#{sex}
+            </if>
+            <if test="status!=null and status!=''">
+                and status=#{status}
+            </if>
+            <if test="roleId!=null and roleId!=''">
+                and role_id=#{roleId}
+            </if>
+            <if test="registTime!=null and registTime!=''">
+                and regist_time=#{registTime}
+            </if>
+        </where>
+    </select>
+    <!--模糊查询-->
+    <select id="findByParamVer" parameterType="User" resultMap="userResultMap">
+        SELECT * FROM user1
+        <where>
+            <if test="id!=null and id!=''">
+                and id=#{id}
+            </if>
+            <if test="loginName!=null and loginName!=''">
+                and login_name LIKE  CONCAT(CONCAT('%',#{loginName},'%'))
+            </if>
+            <if test="password!=null and password!=''">
+                and password=#{password}
+            </if>
+            <if test="loginTime!=null and loginTime!=''">
+                and login_time=#{loginTime}
+            </if>
+            <if test="realName!=null and realName!=''">
+                and real_name LIKE CONCAT(CONCAT('%',#{realName},'%'))
+            </if>
+            <if test="sex!=null">
+                and sex=#{sex}
+            </if>
+            <if test="status!=null and status!=''">
+                and status=#{status}
+            </if>
+            <if test="roleId!=null and roleId!=''">
+                and role_id=#{roleId}
+            </if>
+            <if test="registTime!=null and registTime!=''">
+                and regist_time=#{registTime}
+            </if>
+        </where>
+    </select>
+    <!--添加用户-->
+    <insert id="add" parameterType="User">
+        insert into user1 values(#{id},#{loginName},#{password},#{loginTime},#{realName},#{sex},#{status},#{roleId},#{registTime})
+    </insert>
+    <!--修改用户-->
+    <update id="updateById" parameterType="User">
+        update user1 
+        <trim prefix="set" suffixOverrides=",">
+            <if test="loginName!=null and loginName!=''">
+                login_name=#{loginName},
+            </if>
+            <if test="password!=null and password!=''">
+                password=#{password},
+            </if>
+            <if test="loginTime!=null and loginTime!=''">
+                login_time=#{loginTime},
+            </if>
+            <if test="realName!=null and realName!=''">
+                real_name=#{realName},
+            </if>
+            <if test="sex!=null and sex!=''">
+                sex=#{sex},
+            </if>
+            <if test="status!=null">
+                status=#{status},
+            </if>
+            <if test="roleId!=null and roleId!=''">
+                role_id=#{roleId},
+            </if>
+            <if test="registTime!=null and registTime!=''">
+                regist_time=#{registTime},
+            </if>
+        </trim>
+        WHERE id=#{id}
+    </update>
+</mapper>
